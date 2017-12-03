@@ -7,6 +7,7 @@ public class NonPlayerCharacter : MonoBehaviour
 {
     public Color color;
     public Vector2 sizeRange;
+    public AnimationCurve sizeModifier;
 
     SpriteRenderer _spriteRenderer;
     public float size { get; private set; }
@@ -17,7 +18,7 @@ public class NonPlayerCharacter : MonoBehaviour
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();
 
-        size = Random.Range(sizeRange.x, sizeRange.y);
+        size = sizeModifier.Evaluate(Random.Range(sizeRange.x, sizeRange.y));
         transform.localScale =Vector3.one*size;
 
 
@@ -62,10 +63,5 @@ public class NonPlayerCharacter : MonoBehaviour
 
         _spriteRenderer.sprite = Sprite.Create(_tex, new Rect(0, 0, psgSprite.width, psgSprite.height), new Vector2(0.5f, 0), 64f);
 
-    }
-
-    void Update()
-    {
-        
     }
 }

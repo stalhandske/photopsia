@@ -11,16 +11,19 @@ public class FrameController : MonoBehaviour
     public float idleAlpha;
     public SpriteRenderer[] camSpriteRenderers;
     public RenderTexture renderTexture;
+    public GameObject dot;
+    public AudioSource audioSourceClick;
+    public AudioSource audioSourceBeep;
 
     Vector2 _target;
     SpriteRenderer[] _spriterenderers;
     bool _snapping;
-    AudioSource _audioSource;
+    Collider2D _targetCol;
+    TakePixOfMe _targetTakePixOfMe;
 
     void Awake()
     {
         _spriterenderers = GetComponentsInChildren<SpriteRenderer>();
-        _audioSource = GetComponent<AudioSource>();
     }
 
 	void Update () {
@@ -40,6 +43,34 @@ public class FrameController : MonoBehaviour
 	        s.color = c;
 	    }
 
+	    _targetCol = Physics2D.OverlapCircle(transform.position,.5f, LayerMask.GetMask("Tourist"));
+
+	    if (_targetCol && inputMagnitude > .2f)
+	    {
+	        dot.transform.localScale = Vector3.one * 3;
+
+	        TakePixOfMe tpom = _targetCol.GetComponent<TakePixOfMe>();
+
+	        if (tpom)
+	        {
+	            if (!_targetTakePixOfMe)
+	            {
+	                _targetTakePixOfMe = tpom;
+                    _targetTakePixOfMe.SetInView();
+	                audioSourceBeep.Play();
+                }
+	        }
+	    }
+	    else
+	    {
+	        dot.transform.localScale = Vector3.one;
+	        if (_targetTakePixOfMe)
+	        {
+	            _targetTakePixOfMe.SetOutOfView();
+	            _targetTakePixOfMe = null;
+	        }
+	    }
+
 	    //foreach (SpriteRenderer s in camSpriteRenderers)
 	    //{
 	    //    Color c = s.color;
@@ -49,9 +80,11 @@ public class FrameController : MonoBehaviour
 
 	    if (Input.GetButtonDown("Fire1") && !_snapping)
 	    {
-	        _audioSource.pitch = Random.Range(.9f, 1.1f);
-	        _audioSource.Play();
+	        audioSourceClick.pitch = Random.Range(.9f, 1.1f);
+	        audioSourceClick.Play();
             StartCoroutine(SnapCr());
+            if (_targetTakePixOfMe)
+                _targetTakePixOfMe.TakeSnapShot();
 	        if (OnSnap != null)
     	        OnSnap();
 	    }

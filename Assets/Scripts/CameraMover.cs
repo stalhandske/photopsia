@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class CameraMover : MonoBehaviour
 {
-
+    public AnimationCurve zoomCurve;
+    public AnimationCurve followCurve;
     public Transform target;
-    public float followTargetAmount = 0.1f;
 
     Vector3 _startPos;
 
@@ -17,6 +17,7 @@ public class CameraMover : MonoBehaviour
 
     void Update()
     {
-        transform.position = _startPos + followTargetAmount * target.position;
+        transform.position = _startPos + followCurve.Evaluate(Time.timeSinceLevelLoad) * target.position;
+        Camera.main.orthographicSize = zoomCurve.Evaluate(Time.timeSinceLevelLoad);
     }
 }

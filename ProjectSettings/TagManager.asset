@@ -15,8 +15,8 @@ TagManager:
   - 
   - Frame
   - Wall
-  - 
-  - 
+  - Antiwall
+  - Tourist
   - 
   - 
   - 
@@ -46,6 +46,9 @@ TagManager:
     locked: 0
   - name: Stuff
     uniqueID: 3366020817
+    locked: 0
+  - name: NPC
+    uniqueID: 1123324775
     locked: 0
   - name: Character
     uniqueID: 1097846213
